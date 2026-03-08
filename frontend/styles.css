@@ -80,6 +80,18 @@ body {
   flex-wrap: wrap;
 }
 
+.upload-label {
+  margin-top: 1rem;
+}
+
+.file-input {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
 .topic-input {
   flex: 1;
   min-width: 200px;

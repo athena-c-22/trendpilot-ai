@@ -31,7 +31,9 @@
           />
           <button type="button" id="runBtn" class="btn btn-primary">Run research</button>
         </div>
-        <p class="input-hint">Agents will search the web, check facts, and generate a go-to-market report.</p>
+        <label for="fileUpload" class="input-label upload-label">Upload reports or datasets (optional)</label>
+        <input type="file" id="fileUpload" class="file-input" accept=".pdf,.csv,.txt,.md,.tsv" multiple />
+        <p class="input-hint">Agents will search the web, use your uploaded documents, check facts, and generate a go-to-market report. PDF, CSV, TXT, MD.</p>
       </section>
 
       <section class="status-section hidden" id="statusSection">

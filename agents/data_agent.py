@@ -12,13 +12,13 @@ from backend.config import get_openai_client
 from rag.retrieval import get_context_for_prompt
 
 DATA_AGENT_SYSTEM = """You are an industry research specialist.
-Using the provided knowledge base context, extract insights relevant to the topic.
+Using the provided knowledge base context (which may include user-uploaded industry reports and datasets), extract insights relevant to the topic.
 If context is empty, return structured empty/minimal JSON from general knowledge.
 Always return valid JSON only."""
 
 DATA_AGENT_USER_TEMPLATE = """Topic: {topic}
 
-Knowledge base context:
+Knowledge base context (web-sourced and/or user-uploaded reports/datasets):
 {context}
 
 Return exactly one JSON object with these keys:

@@ -6,9 +6,11 @@ Multi-agent market intelligence system that autonomously researches a topic and 
 
 - **Coordinator** orchestrates the pipeline.
 - **Search Agent** gathers market/competitor info from the web.
-- **Data Agent** pulls insights from the RAG knowledge base.
+- **Data Agent** pulls insights from the RAG knowledge base (including **user-uploaded reports and datasets**).
 - **Fact-Check Agent** validates and merges findings.
 - **Strategy Agent** produces the final GTM report.
+
+You can optionally **upload industry reports or datasets** (PDF, CSV, TXT, MD). They are ingested into RAG and used alongside web search in the analysis.
 
 ## Setup
 
@@ -79,6 +81,14 @@ Other URLs:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/research -H "Content-Type: application/json" -d "{\"topic\": \"AI productivity app for university students\"}"
+```
+
+### Upload documents (optional)
+
+Upload PDF, CSV, TXT, or MD files to the RAG knowledge base so the Data Agent can use them in research:
+
+```bash
+curl -X POST http://127.0.0.1:8000/upload -F "files=@report.pdf" -F "files=@data.csv"
 ```
 
 ## RAG (optional)

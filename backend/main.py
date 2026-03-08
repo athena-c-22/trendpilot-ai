@@ -25,7 +25,7 @@ try:
 except ImportError:
     pass
 
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -36,6 +36,8 @@ from backend.config import (
     TRENDPILOT_API_KEY,
     RATE_LIMIT_PER_MINUTE,
     PORT,
+    REPORTS_DIR,
+    DATASETS_DIR,
 )
 
 # In-memory rate limit: ip -> list of request timestamps (pruned to last minute)
@@ -67,6 +69,13 @@ class ReportResponse(BaseModel):
     topic: str
     report: dict
     intermediate: dict | None = None
+
+
+class UploadResponse(BaseModel):
+    uploaded: int
+    ingested: int
+    filenames: list[str]
+    errors: list[str]
 
 
 def _get_client_ip(request: Request) -> str:
@@ -101,6 +110,52 @@ def _check_rate_limit(request: Request) -> None:
             detail=f"Rate limit exceeded. Try again in a minute.",
         )
     times.append(now)
+
+
+ALLOWED_UPLOAD_EXTENSIONS = {".pdf", ".csv", ".txt", ".md", ".tsv"}
+
+
+@app.post("/upload", response_model=UploadResponse)
+def upload_documents(request: Request, files: list[UploadFile] = File(default=[])):
+    """
+    Upload industry reports or datasets (PDF, CSV, TXT, MD).
+    Files are stored and ingested into the RAG knowledge base for use in research.
+    """
+    _check_auth(request)
+    if not files:
+        raise HTTPException(status_code=400, detail="No files provided")
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    DATASETS_DIR.mkdir(parents=True, exist_ok=True)
+    uploaded = 0
+    ingested = 0
+    filenames = []
+    errors = []
+    for u in files:
+        if not u.filename:
+            errors.append("Empty filename")
+            continue
+        path = Path(u.filename)
+        suffix = path.suffix.lower()
+        if suffix not in ALLOWED_UPLOAD_EXTENSIONS:
+            errors.append(f"{u.filename}: unsupported type (use PDF, CSV, TXT, MD)")
+            continue
+        try:
+            content = u.file.read()
+            if len(content) > 20 * 1024 * 1024:  # 20 MB
+                errors.append(f"{u.filename}: file too large (max 20 MB)")
+                continue
+            dest_dir = DATASETS_DIR if suffix in (".csv", ".tsv") else REPORTS_DIR
+            safe_name = "".join(c for c in path.name if c.isalnum() or c in "._- ") or "upload"
+            dest = dest_dir / safe_name
+            dest.write_bytes(content)
+            uploaded += 1
+            filenames.append(safe_name)
+            from rag.ingest import process_and_ingest_file
+            ids = process_and_ingest_file(dest, metadata={"uploaded": "true"})
+            ingested += len(ids)
+        except Exception as e:
+            errors.append(f"{u.filename}: {str(e)}")
+    return UploadResponse(uploaded=uploaded, ingested=ingested, filenames=filenames, errors=errors)
 
 
 @app.post("/research", response_model=ReportResponse)

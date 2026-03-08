@@ -1,6 +1,7 @@
 (function () {
   const topicInput = document.getElementById('topic');
   const runBtn = document.getElementById('runBtn');
+  const fileUpload = document.getElementById('fileUpload');
   const inputSection = document.getElementById('inputSection');
   const statusSection = document.getElementById('statusSection');
   const statusText = document.getElementById('statusText');
@@ -191,14 +192,39 @@
 
     clearError();
     runBtn.disabled = true;
-    setStatus('Running research pipeline…', 'Search → Data → Fact-check → Strategy');
     show(statusSection);
     hide(reportSection);
 
+    const base = getApiBase();
+    const apiKey = getApiKey();
+
     try {
-      const base = getApiBase();
+      if (fileUpload && fileUpload.files && fileUpload.files.length > 0) {
+        setStatus('Uploading documents…', 'Adding to knowledge base');
+        const formData = new FormData();
+        for (let i = 0; i < fileUpload.files.length; i++) {
+          formData.append('files', fileUpload.files[i]);
+        }
+        const uploadRes = await fetch(base + '/upload', {
+          method: 'POST',
+          headers: apiKey ? { 'X-API-Key': apiKey } : {},
+          body: formData,
+        });
+        const uploadData = await uploadRes.json().catch(function () { return {}; });
+        if (!uploadRes.ok) {
+          const msg = uploadData.detail || uploadRes.statusText || 'Upload failed';
+          showError(typeof msg === 'string' ? msg : JSON.stringify(msg));
+          runBtn.disabled = false;
+          return;
+        }
+        if (uploadData.errors && uploadData.errors.length > 0) {
+          setStatus('Running research pipeline…', 'Some uploads had issues. ' + uploadData.errors.join(' '));
+        }
+      }
+
+      setStatus('Running research pipeline…', 'Search → Data → Fact-check → Strategy');
+
       const headers = { 'Content-Type': 'application/json' };
-      const apiKey = getApiKey();
       if (apiKey) headers['X-API-Key'] = apiKey;
       const res = await fetch(base + '/research', {
         method: 'POST',
