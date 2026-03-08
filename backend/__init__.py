@@ -1,0 +1,1 @@
+# TrendPilot AI backend

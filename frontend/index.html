@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Optional: set content to protect /research when TRENDPILOT_API_KEY is set on server -->
+  <meta name="api-key" content="" />
+  <title>TrendPilot AI — Market Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="logo">TrendPilot<span class="logo-accent">AI</span></h1>
+      <p class="tagline">Multi-agent market intelligence → GTM strategy from a topic</p>
+    </header>
+
+    <main class="main">
+      <section class="input-section" id="inputSection">
+        <label for="topic" class="input-label">What market or product do you want to research?</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="topic"
+            class="topic-input"
+            placeholder="e.g. AI productivity app for university students"
+            autocomplete="off"
+          />
+          <button type="button" id="runBtn" class="btn btn-primary">Run research</button>
+        </div>
+        <p class="input-hint">Agents will search the web, check facts, and generate a go-to-market report.</p>
+      </section>
+
+      <section class="status-section hidden" id="statusSection">
+        <div class="status-card" id="statusCard">
+          <div class="status-spinner" aria-hidden="true"></div>
+          <p class="status-text" id="statusText">Running research pipeline…</p>
+          <p class="status-detail" id="statusDetail">Search → Data → Fact-check → Strategy</p>
+        </div>
+      </section>
+
+      <section class="error-section hidden" id="errorSection">
+        <div class="error-card" id="errorCard"></div>
+      </section>
+
+      <article class="report hidden" id="reportSection">
+        <header class="report-header">
+          <h2 class="report-title">GTM Strategy Report</h2>
+          <p class="report-topic" id="reportTopic"></p>
+        </header>
+
+        <div class="report-body">
+          <section class="report-block" id="blockMarketOverview">
+            <h3>Market overview</h3>
+            <div class="block-content" id="contentMarketOverview"></div>
+          </section>
+
+          <section class="report-block" id="blockCompetitors">
+            <h3>Competitor landscape</h3>
+            <div class="block-content" id="contentCompetitors"></div>
+          </section>
+
+          <section class="report-block" id="blockAudience">
+            <h3>Target audience</h3>
+            <div class="block-content" id="contentAudience"></div>
+          </section>
+
+          <section class="report-block" id="blockPricing">
+            <h3>Pricing strategy</h3>
+            <div class="block-content" id="contentPricing"></div>
+          </section>
+
+          <section class="report-block" id="blockChannels">
+            <h3>Marketing channels</h3>
+            <div class="block-content" id="contentChannels"></div>
+          </section>
+
+          <section class="report-block" id="blockLaunch">
+            <h3>Launch plan</h3>
+            <div class="block-content" id="contentLaunch"></div>
+          </section>
+
+          <section class="report-block" id="blockInsights">
+            <h3>Key insights</h3>
+            <div class="block-content" id="contentInsights"></div>
+          </section>
+
+          <section class="report-block" id="blockRisks">
+            <h3>Risks & mitigations</h3>
+            <div class="block-content" id="contentRisks"></div>
+          </section>
+        </div>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p>TrendPilot AI — agentic market research</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
