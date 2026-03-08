@@ -109,7 +109,7 @@ The app is ready to deploy to **Render**, **Fly.io**, or any host that runs Pyth
    - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `python -m backend.main` or `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
 3. **Environment:** Add variables (e.g. `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`). Render sets `PORT` automatically.
-4. Deploy; your API (and the same-origin UI) will be at `https://<your-service>.onrender.com`.
+4. Deploy; your API (and the same-origin UI) will be at https://trendpilot-ai.onrender.com/
 
 **Notes:**
 - **Protection:** Rate limit is 10 requests per IP per minute (`RATE_LIMIT_PER_MINUTE`); optional `TRENDPILOT_API_KEY` for API key auth.
@@ -119,7 +119,7 @@ The app is ready to deploy to **Render**, **Fly.io**, or any host that runs Pyth
 
 GitHub Pages only serves **static files**; it cannot run the FastAPI backend. You can host the **UI** on GitHub Pages and call a **backend** deployed elsewhere (e.g. Render).
 
-1. **Deploy the backend first** on Render and note the URL (e.g. `https://trendpilot-ai.onrender.com`).
+1. **Deploy the backend first** on Render and note the URL: https://trendpilot-ai.onrender.com/
 
 2. **Copy the frontend into `docs/`** so GitHub Pages can serve it:
    ```bash
@@ -135,7 +135,7 @@ GitHub Pages only serves **static files**; it cannot run the FastAPI backend. Yo
      ```
    - Set your backend URL so the UI calls your API:
      ```html
-     <meta name="api-base" content="https://your-app.onrender.com" />
+     <meta name="api-base" content="https://trendpilot-ai.onrender.com" />
      ```
 
 4. **Turn on GitHub Pages:** Repo → **Settings** → **Pages** → Source: **Deploy from a branch** → Branch: **main** → Folder: **/docs** → Save.
