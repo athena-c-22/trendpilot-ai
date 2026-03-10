@@ -10,6 +10,7 @@
   const errorCard = document.getElementById('errorCard');
   const reportSection = document.getElementById('reportSection');
   const reportTopic = document.getElementById('reportTopic');
+  const themeToggle = document.getElementById('themeToggle');
 
   const contentIds = {
     market_overview: 'contentMarketOverview',
@@ -32,6 +33,37 @@
     key_insights: 'blockInsights',
     risks_and_mitigations: 'blockRisks',
   };
+
+  function getInitialTheme() {
+    const stored = window.localStorage ? window.localStorage.getItem('trendpilot-theme') : null;
+    if (stored === 'light' || stored === 'dark') return stored;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      return 'light';
+    }
+    return 'dark';
+  }
+
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || getInitialTheme();
+    const next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    if (window.localStorage) {
+      window.localStorage.setItem('trendpilot-theme', next);
+    }
+  }
+
+  applyTheme(getInitialTheme());
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      toggleTheme();
+    });
+  }
 
   function show(el) {
     el.classList.remove('hidden');
